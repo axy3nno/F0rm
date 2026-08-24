@@ -137,6 +137,5 @@ class Registration
                     Console.Clear();
                     return;
             }
-
         }
     }
