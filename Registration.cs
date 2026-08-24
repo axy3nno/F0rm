@@ -1,115 +1,39 @@
-class Registration
+namespace F0rmDataBase
+{
+    class Registration
     {
+        public static void Greetings(string username) => Console.WriteLine($"Здравствуйте, {username}!\n");
+
         public static void CreateUser()
         {
-            int birthYear, age;
-
-            string username = "";
-            string gender = "";
-
             Console.Clear();
 
-            while (string.IsNullOrWhiteSpace(username))
-            {
-                Console.WriteLine("|======== ВВЕДИТЕ ИМЯ ПОЛЬЗОВАТЕЛЯ =========|");
-                Console.WriteLine(" ");
-                username = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(username))
-                {
-                    Console.Clear();
-                    Console.WriteLine("Имя пользователя не должно состоять из пробела!");
-                    Console.ReadLine();
-                }
-            }
-
-            Console.Clear();
-
-            Console.WriteLine($"Здравствуйте, {username}!");
-            Console.WriteLine(" ");
-
-        while (true)
-        {
-            Console.Clear();
-
-            Console.WriteLine("|========= УКАЖИТЕ ВАШ ГОД РОЖДЕНИЯ =========|");
-            Console.WriteLine(" ");
-
-            try
-            {
-                birthYear = int.Parse(Console.ReadLine());
-                age = DateTime.Now.Year - birthYear;
-
-                if (age < 0)
-                    {
-                        Console.WriteLine("Ошибка! Кажется Вы еще не родились!");
-                        Console.ReadLine();
-                        continue;
-                    }          
-
-                break;
-            }
-
-            catch
-            {
-                Console.WriteLine("Ошибка! Введите число.");
-                Console.ReadLine();
-            }
-        }
+            string username = InputHelper.RequestUsername();
             
+            Console.Clear();
+            Greetings(username);
 
-            while (true)
-            {
-                Console.Clear();
-
-                Console.WriteLine("|============== ВЫБЕРИТЕ ПОЛ ==============|");
-                Console.WriteLine("1. мужчина");
-                Console.WriteLine("2. женщина");
-                Console.WriteLine(" ");
-
-                gender = Console.ReadLine();
-
-                switch (gender)
-                {
-                    case "1":
-                    case "2":
-                        Console.Clear();
-                        break;
-                
-                    default:
-                        {   
-                            Console.WriteLine("Только М или Ж!");
-                            Console.ReadLine();
-                            continue;
-                        }
-                
-                }
-
-                break;
-            }
-
-            Console.WriteLine("|============ ПРИДУМАЙТЕ ПАРОЛЬ ============|");
-            Console.WriteLine(" ");
-
-            string password = Console.ReadLine();
+            int birthYear = InputHelper.RequestBirthYear();
+            int age = DateTime.Now.Year - birthYear;
+            
+            string gender = InputHelper.RequestGender();
+            string encryptedPassword = InputHelper.RequestPassword();
 
             Console.Clear();
-
             Console.WriteLine($"Отлично, {username}! Вы успешно зарегистрировались в F0rm!");
             Console.ReadLine();
-
             Console.Clear();
 
             int id = Database.getNextId();
- 
+     
             User newUser = new User
             {
                 ID = id,
                 USERNAME = username,
                 BIRTHYEAR = birthYear,
-                AGE = age,
+                AGE = age, 
                 GENDER = gender,
-                PASSWORD = password
+                PASSWORD = encryptedPassword
             };
 
             Database.allUsers.Add(newUser);
@@ -117,20 +41,23 @@ class Registration
 
             Console.WriteLine($"Ваш уникальный ID: {id}");
             Console.ReadLine();
-
             Console.Clear();
-            
-            Console.WriteLine("|============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|");
-            Console.WriteLine("1. изменить данные");
-            Console.WriteLine("2. выход из программы");
-            Console.WriteLine(" ");
 
-            string choice = Console.ReadLine();
+            Console.WriteLine("""
+
+            |============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|
+            1. изменить данные
+            2. выход из программы
+             
+            """);
+
+            string? choice = Console.ReadLine();
 
             switch (choice)
             {
                 case "1":
-                    Entrance.EditUser(id);
+                    Console.Clear();
+                    Entrance.Profile(id);
                     break;
 
                 case "2":
@@ -139,3 +66,4 @@ class Registration
             }
         }
     }
+}

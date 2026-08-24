@@ -1,99 +1,99 @@
 using System.Text.Json;
-using F0rmDataBase;
-class Database
+
+namespace F0rmDataBase
 {
-    public static List<User> allUsers = new List<User>();
-    public static void saveUsers()
+    class Database
     {
-        string json = JsonSerializer.Serialize(allUsers);
-        File.WriteAllText("usersData.json", json);
-    }
-
-    public static int getNextId()
-    {
-        int maxID = 999;
-        
-        string json = File.ReadAllText("usersData.json");
-        if (string.IsNullOrWhiteSpace(json))
+        public static List<User> allUsers = new List<User>();
+        public static void saveUsers()
         {
-            return maxID = 999;
+            string json = JsonSerializer.Serialize(allUsers);
+            
+            File.WriteAllText("usersData.json", json);
         }
-        else
+        public static User? FindUserById(int id)
         {
-            Database.allUsers = JsonSerializer.Deserialize<List<User>>(json);
-        }
-        
+            if (!File.Exists("usersData.json")) return null;
 
-        foreach (User newUser in allUsers)
-        {
-            if (newUser.ID > maxID)
+            string json = File.ReadAllText("usersData.json");
+
+            if (string.IsNullOrWhiteSpace(json)) return null;
+
+            allUsers = JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+
+            foreach (User user in allUsers)
             {
-                maxID = newUser.ID;
+                if (user.ID == id)
+                {
+                    return user;
+                }
             }
+
+            return null;
         }
-
-        ++maxID;
-        return maxID;
-    }
-    public static bool checkId(int inputID)
-    {
-        string json = File.ReadAllText("usersData.json");
-
-        if (string.IsNullOrWhiteSpace(json))
+        public static int getNextId()
         {
-            Console.WriteLine("Ошибка со стороны F0rm! Просим извинения за предоставленные неудобства!");
-            Console.WriteLine("Повторите попытку позже, предварительно обновив версию F0rm.");
-            Console.ReadLine();
+            int maxID = 999;
+            
+            FindUserById(-1); 
 
-            return false;
+            foreach (User newUser in allUsers)
+            {
+                if (newUser.ID > maxID)
+                {
+                    maxID = newUser.ID;
+                }
+            }
+
+            return ++maxID;
         }
-
-        Database.allUsers = JsonSerializer.Deserialize<List<User>>(json);
-
-        foreach (User user in Database.allUsers)
+        public static bool checkId(int inputID)
         {
-            if (user.ID == inputID)
+            User? user = FindUserById(inputID);
+
+            if (user == null)
             {
                 Console.Clear();
-                Console.WriteLine("|============== УКАЖИТЕ ПАРОЛЬ ==============|");
-                Console.WriteLine(" ");
 
-                string inputPassword = Console.ReadLine();
+                Console.WriteLine("Ошибка. Неверный или несуществующий ID!");
+                Console.ReadLine();
 
                 Console.Clear();
 
-                if (inputPassword == user.PASSWORD)
-                {   
-                    Console.Clear();
+                Begin.Main();
+                return false;
+            }
 
-                    Console.WriteLine($"Приветствуем, {user.USERNAME}!");
-                    Console.WriteLine("Вы успешно вошли в свой аккаунт.");
-                    Console.ReadLine();
-                    return true;
-                }
+            string inputPasswordBase64 = InputHelper.RequestPassword("УКАЖИТЕ ПАРОЛЬ");
 
-                else
-                {   
-                    Console.Clear();
+            Console.Clear();
 
-                    Console.WriteLine("Ошибка. Неверный пароль!");
-                    Console.ReadLine();
+            if (inputPasswordBase64 == user.PASSWORD)
+            {   
+                Console.Clear();
 
-                    Console.Clear();
+                Console.WriteLine($"""
 
-                    Begin.Main();
-                    return false;
-                }
+                Приветствуем, {user.USERNAME}!
+                Вы успешно вошли в свой аккаунт.
+                 
+                """);
+
+                Console.ReadLine();
+                return true;
+            }
+            else
+            {   
+                Console.Clear();
+
+                Console.WriteLine("Ошибка. Неверный пароль!");
+                Console.ReadLine();
+
+                Console.Clear();
+
+                Begin.Main();
+                return false;
             }
         }
-        Console.Clear();
-
-        Console.WriteLine("Ошибка. Неверный или несуществующий ID!");
-        Console.ReadLine();
-
-        Console.Clear();
-
-        Begin.Main();
-        return false;
     }
 }

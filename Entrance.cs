@@ -1,13 +1,23 @@
-using F0rmDataBase;
-class Entrance
+namespace F0rmDataBase
+{
+    class Entrance
     {
         public static void CheckUser()
         {
             Console.Clear();
-            Console.WriteLine("|============== УКАЖИТЕ ID ================|");
-            Console.WriteLine(" ");
+            Console.WriteLine("""
 
-            int id = int.Parse(Console.ReadLine());
+            |============== УКАЖИТЕ ID ================|
+             
+            """);
+
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.Clear();
+                Console.WriteLine("Ошибка! ID должен быть числом.");
+                Console.ReadLine();
+                return;
+            }
 
             Console.Clear();
             
@@ -15,69 +25,72 @@ class Entrance
 
             if (isAuthorized)
             {
-                EditUser(id);
+                Profile(id);
             }
         }
 
-        public static void EditUser(int id)
+        public static void Profile(int id)
         {   
             while (true)
             {
-            Console.WriteLine("|============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|");
-            Console.WriteLine("1. посмотреть профиль");
-            Console.WriteLine("2. редактировать профиль");
-            Console.WriteLine("3. удалить профиль");
-            Console.WriteLine("4. выход из F0rm");
-            Console.WriteLine(" ");
+                Console.WriteLine("""
 
-            string choice = Console.ReadLine();
-            Console.Clear();
+                |============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|
+                1. посмотреть профиль
+                2. редактировать профиль
+                3. удалить профиль
+                4. выход из F0rm
+                 
+                """);
 
-            switch (choice)
+                string? choice = Console.ReadLine();
+                Console.Clear();
+
+                switch (choice)
                 {
                     case "1":
                         foreach (User user in Database.allUsers)
+                        {
+                            if (user.ID == id)
                             {
-                                if (user.ID == id)
-                                {
-                                    Console.WriteLine("|================= ПРОФИЛЬ =================|");
-                                    Console.WriteLine($"ID : {user.ID}");
-                                    Console.WriteLine($"ИМЯ ПОЛЬЗОВАТЕЛЯ : {user.USERNAME}");
-                                    Console.WriteLine($"ГОД РОЖДЕНИЯ : {user.BIRTHYEAR}");
-                                    Console.WriteLine($"ВОЗРАСТ : {user.AGE}");
-                                    Console.WriteLine($"ПОЛ : {user.GENDER}");
+                                Console.WriteLine($"""
 
-                                    Console.WriteLine(" ");
-                                    Console.ReadLine();
-
-                                    Console.Clear();
-                                    break;
-                                }
+                                |================= ПРОФИЛЬ =================|
+                                ID : {user.ID}
+                                ИМЯ ПОЛЬЗОВАТЕЛЯ : {user.USERNAME}
+                                ГОД РОЖДЕНИЯ : {user.BIRTHYEAR}
+                                ВОЗРАСТ : {user.AGE}
+                                ПОЛ : {user.GENDER}
+                                 
+                                """);
+                                
+                                Console.ReadLine();
+                                Console.Clear();
+                                break;
                             }
+                        }
                         break;
 
-                    case "2":
-                        
-                        break;
+                        case "2":
+                            ProfileEditor.Edit(id);
+                            break;
+
                 
                     case "3":
-                        User userToDelete = null;
+                        User? userToDelete = null;
 
-                        Console.WriteLine("Чтобы подтвердить текущее действие, введите - 1 :");
-                        Console.WriteLine(" ");
+                        Console.WriteLine("""
 
-                        string confirm = Console.ReadLine();
+                        Чтобы подтвердить текущее действие, введите - 1 :
+                         
+                        """);
+
+                        string? confirm = Console.ReadLine();
                         Console.Clear();
 
                         if (confirm == "1")
                         {
-                            foreach (User user in Database.allUsers)
-                            {
-                                if (user.ID == id)
-                                {
-                                    userToDelete = user;
-                                }
-                            }
+                            if (userToDelete != null) Database.allUsers.Remove(userToDelete);
 
                             if (userToDelete != null)
                             {
@@ -91,7 +104,6 @@ class Entrance
                                 Begin.Main();
                             }
                         }
-
                         else
                         {
                             Console.Clear();
@@ -103,6 +115,8 @@ class Entrance
 
                         Console.WriteLine("Выходя из F0rm, Вы выходите из профиля!");
                         Console.ReadLine();
+                        
+                        Console.Clear();
                         return;
                 
                     default:
@@ -112,3 +126,4 @@ class Entrance
             }
         }
     }
+}

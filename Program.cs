@@ -8,15 +8,18 @@
 
             Console.Clear();
 
-            Console.WriteLine("|============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|");
-            Console.WriteLine("1. регистрация");
-            Console.WriteLine("2. вход");
-            Console.WriteLine("3. выход из F0rm");
-            Console.WriteLine(" ");
+            Console.WriteLine("""
+
+            |============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|
+            1. регистрация
+            2. вход
+            3. выход из F0rm
+             
+            """);
 
             while (true)
             {
-                string choice = Console.ReadLine();
+                string? choice = Console.ReadLine();
                 
                 switch (choice)
                 {

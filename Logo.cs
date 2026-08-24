@@ -15,7 +15,8 @@ class Logo
 ██            █████        █████  ████  ████    ████      ████
 ██              ██████████████    ████    ████  ████      ████
 
-                        Created by sh3
+                    Created by sh3/axy3nno
+            GitHub - https://github.com/axy3nno/F0rm
 ";
 
         Console.WriteLine(logo);
