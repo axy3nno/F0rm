@@ -1,13 +1,11 @@
-﻿namespace F0rmDataBase
+﻿using System.ComponentModel;
+
+namespace F0rmDataBase
 {
     class Begin
     {
-        public static void Main()
+        public static void MainMenu()
         {
-            Logo.Print();
-
-            Console.Clear();
-
             Console.WriteLine("""
 
             |============ ВЫБЕРИТЕ ДЕЙСТВИЕ ============|
@@ -16,11 +14,18 @@
             3. выход из F0rm
              
             """);
+        }
+        public static void Main()
+        {
+            Logo.Print();
+
+            Console.Clear();
+
+            MainMenu();
 
             while (true)
             {
                 string? choice = Console.ReadLine();
-                
                 switch (choice)
                 {
                     case "1":
@@ -33,6 +38,10 @@
 
                     case "3":
                         return;
+
+                    case "/adm":
+                        Admin.Login();
+                        break;
 
                     default:
                         Console.WriteLine("Выбрано некорректное действие!");
