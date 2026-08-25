@@ -1,1 +1,10 @@
-[{"ID":999,"USERNAME":"sh3","BIRTHYEAR":2009,"AGE":17,"GENDER":"1","PASSWORD":"111"},{"ID":1000,"USERNAME":"axy3nno","BIRTHYEAR":2009,"AGE":17,"GENDER":"\u043C\u0443\u0436\u0447\u0438\u043D\u0430","PASSWORD":"MTEx"}]
+[
+  {
+    "ID": 999,
+    "USERNAME": "sh3",
+    "BIRTHYEAR": 2009,
+    "AGE": 17,
+    "GENDER": "1",
+    "PASSWORD": "111"
+  }
+]
