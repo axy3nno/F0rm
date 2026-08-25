@@ -24,3 +24,26 @@ class Logo
         Console.ReadLine();
     }
 }
+class AdminLogo
+{
+    public static void Print()
+    {
+        Console.Clear();
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.ForegroundColor = ConsoleColor.White;
+
+        string logo = @"
+╔══════════════════════════════════════════════════╗
+║                                                  ║
+║                F0RM ADMIN PANEL                  ║
+║                                                  ║
+║              AUTHORIZED ACCESS ONLY              ║
+║                                                  ║
+╚══════════════════════════════════════════════════╝
+";
+
+        Console.WriteLine(logo);
+        Console.ResetColor();
+        Console.ReadLine();
+    }
+}
