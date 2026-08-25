@@ -21,7 +21,7 @@ namespace F0rmDataBase
 
             Console.Clear();
             
-            bool isAuthorized = Database.checkId(id);
+            bool isAuthorized = Database.CheckId(id);
 
             if (isAuthorized)
             {
@@ -95,7 +95,7 @@ namespace F0rmDataBase
                             if (userToDelete != null)
                             {
                                 Database.allUsers.Remove(userToDelete);
-                                Database.saveUsers();
+                                Database.SaveUsers();
 
                                 Console.WriteLine("Профиль был удален.");
                                 Console.ReadLine();
