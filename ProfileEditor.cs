@@ -47,7 +47,7 @@ namespace F0rmDataBase
                         break;
 
                     case "5":
-                        Database.saveUsers();
+                        Database.SaveUsers();
                         
                         Console.WriteLine("Все изменения успешно сохранены в базу!");
                         Console.ReadLine();
