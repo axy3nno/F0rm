@@ -24,7 +24,7 @@ namespace F0rmDataBase
             Console.ReadLine();
             Console.Clear();
 
-            int id = Database.getNextId();
+            int id = Database.GetNextId();
      
             User newUser = new User
             {
@@ -37,7 +37,7 @@ namespace F0rmDataBase
             };
 
             Database.allUsers.Add(newUser);
-            Database.saveUsers();
+            Database.SaveUsers();
 
             Console.WriteLine($"Ваш уникальный ID: {id}");
             Console.ReadLine();
