@@ -4,22 +4,38 @@ namespace F0rmDataBase
 {
     class Database
     {
+        private const string FileName = "usersData.json";
         public static List<User> allUsers = new List<User>();
-        public static void saveUsers()
+        public static bool FileExists()
         {
-            string json = JsonSerializer.Serialize(allUsers);
-            
-            File.WriteAllText("usersData.json", json);
+            return File.Exists(FileName);
+        }
+        public static bool LoadUsers()
+        {
+            if (!FileExists())
+                return false;
+
+            string json = File.ReadAllText(FileName);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                allUsers = new List<User>();
+                return true;
+            }
+
+            allUsers = JsonSerializer.Deserialize<List<User>>(json)
+                       ?? new List<User>();
+
+            return true;
+        }
+        public static void SaveUsers()
+        {
+            string json = JsonSerializer.Serialize(allUsers,new JsonSerializerOptions{WriteIndented = true});
+            File.WriteAllText(FileName, json);
         }
         public static User? FindUserById(int id)
         {
-            if (!File.Exists("usersData.json")) return null;
-
-            string json = File.ReadAllText("usersData.json");
-
-            if (string.IsNullOrWhiteSpace(json)) return null;
-
-            allUsers = JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+            LoadUsers();
 
             foreach (User user in allUsers)
             {
@@ -31,23 +47,58 @@ namespace F0rmDataBase
 
             return null;
         }
-        public static int getNextId()
+        public static void DeleteUser()
         {
-            int maxID = 999;
-            
-            FindUserById(-1); 
+            Console.Clear();
+            int id = InputHelper.RequestId();
 
-            foreach (User newUser in allUsers)
+            if (!LoadUsers()) return;
+            var user = allUsers.FirstOrDefault(u => u.ID == id);
+
+            if (user == null) { Console.WriteLine("\nНе найден."); Console.ReadLine(); return; }
+
+            Console.WriteLine($"""
+
+            Удалить пользователя {user.USERNAME}?
+            1. да
+            2. нет
+
+            """);
+
+            Console.Write("\nВыберите действие: ");
+
+            if (Console.ReadLine() == "1")
             {
-                if (newUser.ID > maxID)
+                allUsers.Remove(user);
+                SaveUsers();
+                Console.WriteLine("\nУспешно удалён.");
+                Console.ReadLine();
+                ListUsers();
+            }
+            else
+            {
+                Console.WriteLine("\nУдаление отменено.");
+                Admin.Panel();
+            }
+        }
+
+        public static int GetNextId()
+        {
+            LoadUsers();
+
+            int maxID = 999;
+
+            foreach (User user in allUsers)
+            {
+                if (user.ID > maxID)
                 {
-                    maxID = newUser.ID;
+                    maxID = user.ID;
                 }
             }
 
-            return ++maxID;
+            return maxID + 1;
         }
-        public static bool checkId(int inputID)
+        public static bool CheckId(int inputID)
         {
             User? user = FindUserById(inputID);
 
@@ -58,41 +109,104 @@ namespace F0rmDataBase
                 Console.WriteLine("Ошибка. Неверный или несуществующий ID!");
                 Console.ReadLine();
 
-                Console.Clear();
-
-                Begin.Main();
                 return false;
             }
 
-            string inputPasswordBase64 = InputHelper.RequestPassword("УКАЖИТЕ ПАРОЛЬ");
+            string inputPassword = InputHelper.RequestPassword("УКАЖИТЕ ПАРОЛЬ");
 
             Console.Clear();
 
-            if (inputPasswordBase64 == user.PASSWORD)
-            {   
-                Console.Clear();
-
+            if (inputPassword == user.PASSWORD)
+            {
                 Console.WriteLine($"""
 
                 Приветствуем, {user.USERNAME}!
                 Вы успешно вошли в свой аккаунт.
-                 
+
                 """);
 
                 Console.ReadLine();
+
                 return true;
             }
-            else
-            {   
-                Console.Clear();
 
-                Console.WriteLine("Ошибка. Неверный пароль!");
+            Console.WriteLine("Ошибка. Неверный пароль!");
+            Console.ReadLine();
+
+            return false;
+        }
+        public static void ListUsers()
+        {
+            if (!LoadUsers())
+            {
+                Console.WriteLine("Файл базы данных не найден.");
                 Console.ReadLine();
+                return;
+            }
+
+            if (allUsers.Count == 0)
+            {
+                Console.WriteLine("В базе данных нет пользователей.");
+                Console.ReadLine();
+                return;
+            }
+
+            while (true)
+            {
+                Console.Clear();
+
+                Console.WriteLine("""
+                
+                |================ СПИСОК ПОЛЬЗОВАТЕЛЕЙ ================|
+
+                """);
+
+                foreach (User user in allUsers)
+                {
+                    Console.WriteLine($"ID: {user.ID} | ИМЯ ПОЛьЗОВАТЕЛЯ: {user.USERNAME} ");
+                }
+
+                Console.WriteLine("""
+
+                 
+                Введите ID пользователя для просмотра.
+                Для выхода введите - 1.
+                 
+                """);
+
+                int id = InputHelper.RequestId();
+
+                if (id == 1)
+                {
+                    Console.Clear();
+                    Admin.Panel();
+                    return;
+                }
+
+                User? selectedUser = FindUserById(id);
+
+                if (selectedUser == null)
+                {
+                    Console.WriteLine("Пользователь с таким ID не найден.");
+                    Console.ReadLine();
+                    continue;
+                }
 
                 Console.Clear();
 
-                Begin.Main();
-                return false;
+                Console.WriteLine($"""
+
+                |================ ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ ================|
+
+                ID : {selectedUser.ID}
+                ИМЯ ПОЛЬЗОВАТЕЛЯ : {selectedUser.USERNAME}
+                ГОД РОЖДЕНИЯ : {selectedUser.BIRTHYEAR}
+                ВОЗРАСТ : {selectedUser.AGE}
+                ПОЛ : {selectedUser.GENDER}
+
+                """);
+
+                Console.ReadLine();
             }
         }
     }
