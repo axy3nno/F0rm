@@ -114,9 +114,17 @@ namespace F0rmDataBase
             """);
 
             string password = "";
+            bool rawPassword = false;
+
             while (true)
             {
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    rawPassword = true;
+                    break;
+                }
 
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
@@ -124,17 +132,19 @@ namespace F0rmDataBase
                     {
                         Console.WriteLine("\nОшибка! Пароль не должен быть пустым.");
                         Console.ReadLine();
-                        
+
                         Console.Clear();
                         Console.WriteLine($"""
 
                         |============ {contextTitle} ============|
                          
                         """);
+
                         password = "";
                         continue;
                     }
-                    Console.WriteLine(); 
+
+                    Console.WriteLine();
                     break;
                 }
 
@@ -152,8 +162,28 @@ namespace F0rmDataBase
                     Console.Write("*");
                 }
             }
+            
+            if (rawPassword)
+            {
+                return password;
+            }
 
             return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(password));
+        }
+        public static int RequestId()
+        {
+            while (true)
+            {
+                Console.Write("Введите ID: ");
+
+                if (int.TryParse(Console.ReadLine(), out int id))
+                {
+                    return id;
+                }
+
+                Console.WriteLine("Ошибка! ID должен быть числом.");
+                Console.ReadLine();
+            }
         }
     }
 }
