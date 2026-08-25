@@ -7,3 +7,8 @@ class User
     public string GENDER { get; set; }
     public string PASSWORD { get; set; }
 }
+class AdminData
+{
+    public const string Login = "admin";
+    public const string Password = "admin";
+}
